@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المعلم - الإدارة</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        #admin-content { display: none; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen p-4 sm:p-6">
+
+    <div id="admin-content" class="max-w-5xl mx-auto bg-white rounded-2xl shadow-xl p-4 sm:p-8 border border-slate-200">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between items-center border-b pb-4 mb-6 gap-4">
+            <div>
+                <h1 class="text-xl sm:text-2xl font-bold text-slate-800 text-center sm:text-right">لوحة تحكم المعلم (الأدمن) ⚙️</h1>
+                <p class="text-xs sm:text-sm text-slate-500 mt-1 text-center sm:text-right">إدارة بنك الأسئلة، مراجعة الامتحانات، ومتابعة درجات الطلاب</p>
+            </div>
+            <a href="index.html" class="w-full sm:w-auto text-center bg-slate-200 hover:bg-slate-300 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                العودة لواجهة الطلاب
+            </a>
+        </div>
+
+        <!-- Main Action Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="bg-indigo-50 border border-indigo-100 p-5 rounded-xl shadow-sm">
+                <h2 class="text-base font-bold text-indigo-900 mb-1">إضافة سؤال جديد</h2>
+                <p class="text-xs text-indigo-600 mb-3">إضافة سؤال جديد للمناهج والصفوف.</p>
+                <button onclick="openQuestionModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition shadow">
+                    ➕ إضافة سؤال
+                </button>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-100 p-5 rounded-xl shadow-sm">
+                <h2 class="text-base font-bold text-blue-900 mb-1">مراجعة الأسئلة الحالية</h2>
+                <p class="text-xs text-blue-600 mb-3">فلترة واستعراض الأسئلة حسب الصف والنوع.</p>
+                <button onclick="openReviewQuestions()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition shadow">
+                    🔍 مراجعة الأسئلة
+                </button>
+            </div>
+
+            <div class="bg-emerald-50 border border-emerald-100 p-5 rounded-xl shadow-sm">
+                <h2 class="text-base font-bold text-emerald-900 mb-1">سجل درجات الطلاب</h2>
+                <p class="text-xs text-emerald-600 mb-3">عرض سجل درجات جميع الطلاب.</p>
+                <button onclick="viewResults()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-3 rounded-lg text-sm transition shadow">
+                    📊 عرض السجل
+                </button>
+            </div>
+        </div>
+
+        <!-- Section 1: Add Question Form -->
+        <div id="questionFormSection" class="hidden mt-8 border-t pt-6">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">إضافة سؤال جديد</h3>
+            <form onsubmit="saveQuestion(event)" class="space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">المادة الدراسية</label>
+                        <select id="subjectSelect" required class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white">
+                            <option value="">اختر المادة...</option>
+                            <option value="القرآن الكريم">القرآن الكريم</option>
+                            <option value="أصول دين">أصول دين</option>
+                            <option value="فقه">فقه</option>
+                            <option value="تجويد">تجويد</option>
+                            <option value="مواد شرعية عامة">مواد شرعية عامة</option>
+                            <option value="اللغة العربية">اللغة العربية</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">الصف الدراسي</label>
+                        <select id="gradeSelect" required class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white">
+                            <option value="">اختر الصف...</option>
+                            <optgroup label="المرحلة الابتدائية">
+                                <option value="الصف الأول الابتدائي">الأول الابتدائي</option>
+                                <option value="الصف الثاني الابتدائي">الثاني الابتدائي</option>
+                                <option value="الصف الثالث الابتدائي">الثالث الابتدائي</option>
+                                <option value="الصف الرابع الابتدائي">الرابع الابتدائي</option>
+                                <option value="الصف الخامس الابتدائي">الخامس الابتدائي</option>
+                                <option value="الصف السادس الابتدائي">السادس الابتدائي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الإعدادية">
+                                <option value="الصف الأول الإعدادي">الأول الإعدادي</option>
+                                <option value="الصف الثاني الإعدادي">الثاني الإعدادي</option>
+                                <option value="الصف الثالث الإعدادي">الثالث الإعدادي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الثانوية">
+                                <option value="الصف الأول الثانوي">الأول الثانوي</option>
+                                <option value="الصف الثاني الثانوي">الثاني الثانوي</option>
+                                <option value="الصف الثالث الثانوي">الثالث الثانوي</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">نوع السؤال</label>
+                        <select id="questionType" onchange="handleTypeChange()" required class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white">
+                            <option value="mcq">اختر من متعدد</option>
+                            <option value="tf">صح أم خطأ</option>
+                            <option value="complete">أكمل العبارات</option>
+                            <option value="reason">علل (سؤال مقالي)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">نص السؤال</label>
+                    <textarea id="qText" rows="2" required placeholder="اكتب السؤال هنا..." class="w-full px-3 py-2 border rounded-lg focus:outline-none"></textarea>
+                </div>
+
+                <div id="mcqOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <input type="text" id="opt1" placeholder="الخيار الأول" class="w-full px-3 py-2 border rounded-lg focus:outline-none">
+                    <input type="text" id="opt2" placeholder="الخيار الثاني" class="w-full px-3 py-2 border rounded-lg focus:outline-none">
+                    <input type="text" id="opt3" placeholder="الخيار الثالث" class="w-full px-3 py-2 border rounded-lg focus:outline-none">
+                    <input type="text" id="opt4" placeholder="الخيار الرابع" class="w-full px-3 py-2 border rounded-lg focus:outline-none">
+                </div>
+
+                <div id="answerSection">
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">الإجابة الصحيحة</label>
+                    <select id="correctOptMcq" class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white">
+                        <option value="1">الخيار الأول</option>
+                        <option value="2">الخيار الثاني</option>
+                        <option value="3">الخيار الثالث</option>
+                        <option value="4">الخيار الرابع</option>
+                    </select>
+                    <select id="correctOptTF" class="hidden w-full px-3 py-2 border rounded-lg focus:outline-none bg-white">
+                        <option value="true">عبارة صحيحة (✔️)</option>
+                        <option value="false">عبارة خاطئة (❌)</option>
+                    </select>
+                    <input type="text" id="correctText" placeholder="اكتب الإجابة النموذجية هنا..." class="hidden w-full px-3 py-2 border rounded-lg focus:outline-none">
+                </div>
+
+                <div class="flex gap-2 pt-2">
+                    <button type="submit" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-lg font-bold hover:bg-indigo-700 transition">حفظ السؤال بنك الأسئلة</button>
+                    <button type="button" onclick="closeAllSections()" class="bg-slate-300 text-slate-700 py-2.5 px-4 rounded-lg font-bold hover:bg-slate-400 transition">إلغاء</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Section 2: Review Questions Section (جديد وحصري) -->
+        <div id="reviewQuestionsSection" class="hidden mt-8 border-t pt-6">
+            <h3 class="text-lg font-bold text-slate-800 mb-4">🔍 مراجعة واستعراض بنك الأسئلة</h3>
+            
+            <!-- أدوات الفلترة والبحث -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border mb-6">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">اختر الصف الدراسي</label>
+                    <select id="filterGrade" onchange="filterQuestions()" class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white text-sm">
+                        <option value="all">جميع الصفوف الدراسية</option>
+                        <optgroup label="المرحلة الابتدائية">
+                            <option value="الصف الأول الابتدائي">الأول الابتدائي</option>
+                            <option value="الصف الثاني الابتدائي">الثاني الابتدائي</option>
+                            <option value="الصف الثالث الابتدائي">الثالث الابتدائي</option>
+                            <option value="الصف الرابع الابتدائي">الرابع الابتدائي</option>
+                            <option value="الصف الخامس الابتدائي">الخامس الابتدائي</option>
+                            <option value="الصف السادس الابتدائي">السادس الابتدائي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الإعدادية">
+                            <option value="الصف الأول الإعدادي">الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الثالث الإعدادي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الثانوية">
+                            <option value="الصف الأول الثانوي">الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الثالث الثانوي</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 mb-1">اختر نوع السؤال</label>
+                    <select id="filterType" onchange="filterQuestions()" class="w-full px-3 py-2 border rounded-lg focus:outline-none bg-white text-sm">
+                        <option value="all">جميع أنواع الأسئلة</option>
+                        <option value="mcq">اختر من متعدد</option>
+                        <option value="tf">صح أم خطأ</option>
+                        <option value="complete">أكمل العبارات</option>
+                        <option value="reason">علل (سؤال مقالي)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- عرض قائمة الأسئلة المفلترة -->
+            <div id="questionsContainer" class="space-y-3">
+                <!-- يتم تعبئة الأسئلة تلقائياً -->
+            </div>
+        </div>
+
+        <!-- Section 3: Student Results Table Section -->
+        <div id="resultsSection" class="hidden mt-8 border-t pt-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-slate-800">📊 سجل نتائج الطلاب</h3>
+                <button onclick="clearAllResults()" class="text-xs bg-red-100 text-red-600 hover:bg-red-200 font-bold px-3 py-1.5 rounded-lg transition">
+                    مسح السجل بالكامل 🗑️
+                </button>
+            </div>
+
+            <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <table class="w-full text-right text-sm text-slate-600">
+                    <thead class="bg-slate-50 text-slate-700 font-bold border-b">
+                        <tr>
+                            <th class="p-3">اسم الطالب</th>
+                            <th class="p-3">الصف الدراسي</th>
+                            <th class="p-3">رقم الهاتف</th>
+                            <th class="p-3">واتساب ولي الأمر</th>
+                            <th class="p-3">النتيجة</th>
+                            <th class="p-3">تاريخ الاختبار</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script Section -->
+    <script>
+        const ADMIN_PASSWORD = "1234";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            let password = prompt("⚠️ هذه منطقة محمية خاصة بالمعلم. يرجى إدخال كلمة السر:");
+            if (password !== ADMIN_PASSWORD) {
+                alert("❌ كلمة السر غير صحيحة! سيتم إعادتك لصفحة الطلاب.");
+                window.location.href = "index.html";
+            } else {
+                document.getElementById('admin-content').style.display = 'block';
+            }
+        });
+
+        function closeAllSections() {
+            document.getElementById('questionFormSection').classList.add('hidden');
+            document.getElementById('reviewQuestionsSection').classList.add('hidden');
+            document.getElementById('resultsSection').classList.add('hidden');
+        }
+
+        function handleTypeChange() {
+            const type = document.getElementById('questionType').value;
+            document.getElementById('mcqOptions').classList.toggle('hidden', type !== 'mcq');
+            document.getElementById('correctOptMcq').classList.toggle('hidden', type !== 'mcq');
+            document.getElementById('correctOptTF').classList.toggle('hidden', type !== 'tf');
+            document.getElementById('correctText').classList.toggle('hidden', type !== 'complete' && type !== 'reason');
+        }
+
+        function openQuestionModal() {
+            closeAllSections();
+            document.getElementById('questionFormSection').classList.remove('hidden');
+            handleTypeChange();
+        }
+
+        function saveQuestion(event) {
+            event.preventDefault();
+            const subject = document.getElementById('subjectSelect').value;
+            const grade = document.getElementById('gradeSelect').value;
+            const type = document.getElementById('questionType').value;
+            const qText = document.getElementById('qText').value;
+
+            const newQuestion = { id: Date.now(), subject, grade, type, qText };
+
+            let questions = JSON.parse(localStorage.getItem('bankQuestions')) || [];
+            questions.push(newQuestion);
+            localStorage.setItem('bankQuestions', JSON.stringify(questions));
+
+            alert("✅ تم حفظ السؤال بنجاح في بنك الأسئلة!");
+            closeAllSections();
+        }
+
+        // مراجعة واستعراض الأسئلة بحسب الفلترة
+        function openReviewQuestions() {
+            closeAllSections();
+            document.getElementById('reviewQuestionsSection').classList.remove('hidden');
+            filterQuestions();
+        }
+
+        function filterQuestions() {
+            const gradeFilter = document.getElementById('filterGrade').value;
+            const typeFilter = document.getElementById('filterType').value;
+            const container = document.getElementById('questionsContainer');
+
+            const questions = JSON.parse(localStorage.getItem('bankQuestions')) || [];
+
+            const filtered = questions.filter(q => {
+                const matchGrade = gradeFilter === 'all' || q.grade === gradeFilter;
+                const matchType = typeFilter === 'all' || q.type === typeFilter;
+                return matchGrade && matchType;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-slate-400 bg-slate-50 rounded-lg border">لا توجد أسئلة مضافة مسبقاً تطابق هذا الاختيار.</div>`;
+                return;
+            }
+
+            const typeNames = { mcq: 'اختر من متعدد', tf: 'صح أم خطأ', complete: 'أكمل', reason: 'علل' };
+
+            container.innerHTML = filtered.map((q, idx) => `
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-start">
+                    <div>
+                        <div class="flex gap-2 mb-2">
+                            <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-0.5 rounded">${q.grade}</span>
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-2 py-0.5 rounded">${q.subject}</span>
+                            <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded">${typeNames[q.type]}</span>
+                        </div>
+                        <p class="text-sm font-bold text-slate-800">${idx + 1}. ${q.qText}</p>
+                    </div>
+                    <button onclick="deleteQuestion(${q.id})" class="text-xs text-red-500 hover:text-red-700 font-bold bg-red-50 hover:bg-red-100 p-2 rounded-lg transition">
+                        حذف 🗑️
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        function deleteQuestion(id) {
+            if (confirm("هل تريد حذف هذا السؤال؟")) {
+                let questions = JSON.parse(localStorage.getItem('bankQuestions')) || [];
+                questions = questions.filter(q => q.id !== id);
+                localStorage.setItem('bankQuestions', JSON.stringify(questions));
+                filterQuestions();
+            }
+        }
+
+        function viewResults() {
+            closeAllSections();
+            const resultsSection = document.getElementById('resultsSection');
+            const tableBody = document.getElementById('resultsTableBody');
+            
+            const results = JSON.parse(localStorage.getItem('examResults')) || [];
+
+            if (results.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center p-6 text-slate-400">لا توجد أية نتائج مسجلة للطلاب حتى الآن.</td></tr>`;
+            } else {
+                tableBody.innerHTML = results.map(r => `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-3 font-bold text-slate-800">${r.name}</td>
+                        <td class="p-3">${r.grade}</td>
+                        <td class="p-3 font-mono">${r.phone}</td>
+                        <td class="p-3 font-mono">${r.parentPhone}</td>
+                        <td class="p-3 font-bold text-emerald-600">${r.score} / ${r.total}</td>
+                        <td class="p-3 text-xs text-slate-400">${r.date}</td>
+                    </tr>
+                `).join('');
+            }
+
+            resultsSection.classList.remove('hidden');
+        }
+
+        function clearAllResults() {
+            if (confirm("هل أنت تأكد من إخلاء ومسح جميع سجلات درجات الطلاب؟")) {
+                localStorage.removeItem('examResults');
+                viewResults();
+            }
+        }
+    </script>
+</body>
+</html>

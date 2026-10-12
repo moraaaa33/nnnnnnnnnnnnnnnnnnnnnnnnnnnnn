@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الامتحانات الإلكترونية - بوابة الطالب</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 min-h-screen flex flex-col justify-between p-4">
+
+    <!-- Header -->
+    <header class="text-center my-6">
+        <h1 class="text-3xl font-bold text-indigo-700">منصة الاختيارات والاختبارات</h1>
+        <p class="text-slate-500 mt-2">أهلاً بك عزيزي الطالب في المنصة التعليمية</p>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-md w-full mx-auto bg-white rounded-2xl shadow-xl p-6 border border-slate-100">
+        
+        <!-- Step 1: Registration Form -->
+        <div id="step-registration">
+            <h2 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">بيانات الدخول (للمرة الأولى)</h2>
+            <form id="studentLoginForm" onsubmit="handleSendOTP(event)" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">اسم الطالب رباعي</label>
+                    <input type="text" id="studentName" required placeholder="أدخل اسمك كاملاً" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">رقم هاتف الطالب</label>
+                    <input type="tel" id="studentPhone" pattern="^01[0125][0-9]{8}$" required placeholder="01xxxxxxxxx" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-left" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">رقم واتساب ولي الأمر (للتأكيد والنتائج)</label>
+                    <input type="tel" id="parentPhone" pattern="^01[0125][0-9]{8}$" required placeholder="01xxxxxxxxx" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none text-left" dir="ltr">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">الصف الدراسي</label>
+                    <select id="academicStage" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                        <option value="">اختر الصف الدراسي...</option>
+                        <optgroup label="المرحلة الابتدائية">
+                            <option value="الصف الأول الابتدائي">الصف الأول الابتدائي</option>
+                            <option value="الصف الثاني الابتدائي">الصف الثاني الابتدائي</option>
+                            <option value="الصف الثالث الابتدائي">الصف الثالث الابتدائي</option>
+                            <option value="الصف الرابع الابتدائي">الصف الرابع الابتدائي</option>
+                            <option value="الصف الخامس الابتدائي">الصف الخامس الابتدائي</option>
+                            <option value="الصف السادس الابتدائي">الصف السادس الابتدائي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الإعدادية">
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الثانوية">
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg transition duration-200 shadow-md">
+                    إرسال رمز التأكيد عبر الواتساب
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 2: Verify OTP -->
+        <div id="step-otp" class="hidden">
+            <h2 class="text-xl font-bold text-slate-800 mb-2">تأكيد رمز الدخول</h2>
+            <p class="text-sm text-slate-500 mb-4">تم إرسال الرمز لرقم ولي الأمر، أدخله هنا للتأكيد:</p>
+            <form id="otpVerifyForm" onsubmit="handleVerifyOTP(event)" class="space-y-4">
+                <div>
+                    <input type="text" id="otpInput" maxlength="4" required placeholder="X - X - X - X" class="w-full text-center text-2xl tracking-widest py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition duration-200 shadow-md">
+                    تأكيد وبدء الاختبار
+                </button>
+            </form>
+        </div>
+
+        <!-- Step 3: Exam Dashboard (يفتح فوراً عند الدخول المستقبلي) -->
+        <div id="step-exam" class="hidden">
+            <div class="border-b pb-3 mb-4 flex justify-between items-center">
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800">الاختبار الإلكتروني</h2>
+                    <p class="text-xs text-indigo-600 font-semibold" id="studentHeaderName"></p>
+                </div>
+                <button onclick="logoutStudent()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold px-2 py-1 rounded transition">
+                    تسجيل خروج ↪️
+                </button>
+            </div>
+
+            <form onsubmit="submitExam(event)" class="space-y-4">
+                <div id="examQuestionsContainer">
+                    <p class="text-center text-slate-400 py-4">جاري تحميل الأسئلة الخاصة بصفك الدراسي...</p>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg transition duration-200 shadow-md">
+                    إرسال إجابات الامتحان 📤
+                </button>
+            </form>
+        </div>
+
+        <!-- Support Section -->
+        <div class="mt-6 pt-5 border-t border-slate-100 text-center">
+            <p class="text-xs font-semibold text-slate-500 mb-2">هل تواجه أية مشكلة في الدخول أو الامتحان؟</p>
+            <div class="flex gap-2 justify-center">
+                <a href="https://wa.me/201000000000" target="_blank" class="inline-flex items-center gap-1.5 bg-emerald-500 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">💬 تواصل واتساب</a>
+                <a href="tel:01000000000" class="inline-flex items-center gap-1.5 bg-slate-700 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-sm">📞 اتصال هاتفي</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center pb-4">
+        <p class="text-xs text-slate-400 mb-2">جميع الحقوق محفوظة © 2026</p>
+        <a href="teacher.html" class="inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition">
+            <span>دخول المعلم / الإدارة</span>
+        </a>
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        let currentOTP = null;
+        let tempStudentData = {};
+
+        // فحص تلقائي عند فتح الصفحة: هل الجهاز مسجل مسبقاً؟
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedStudent = JSON.parse(localStorage.getItem('registeredStudent'));
+            if (savedStudent) {
+                // إذا كان الطالب مسجلاً من قبل، نقله فوراً للامتحان!
+                showExamScreen(savedStudent);
+            }
+        });
+
+        function formatEgyptianPhone(phone) {
+            let clean = phone.replace(/\D/g, '');
+            if (clean.startsWith('0')) clean = '20' + clean.substring(1);
+            return clean;
+        }
+
+        function handleSendOTP(event) {
+            event.preventDefault();
+            
+            tempStudentData = {
+                name: document.getElementById('studentName').value,
+                phone: document.getElementById('studentPhone').value,
+                parentPhone: document.getElementById('parentPhone').value,
+                grade: document.getElementById('academicStage').value
+            };
+
+            currentOTP = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            const msg = `مرحباً ولي أمر الطالب/ة: ${tempStudentData.name}\nرمز التأكيد الخاص بالدخول لمنصة الامتحانات هو: *${currentOTP}*`;
+            window.open(`https://wa.me/${formatEgyptianPhone(tempStudentData.parentPhone)}?text=${encodeURIComponent(msg)}`, '_blank');
+
+            document.getElementById('step-registration').classList.add('hidden');
+            document.getElementById('step-otp').classList.remove('hidden');
+        }
+
+        function handleVerifyOTP(event) {
+            event.preventDefault();
+            if (document.getElementById('otpInput').value === currentOTP) {
+                // حفظ بيانات الطالب في ذاكرة الجهاز بشكل دائم
+                localStorage.setItem('registeredStudent', JSON.stringify(tempStudentData));
+                
+                showExamScreen(tempStudentData);
+            } else {
+                alert("رمز التأكيد غير صحيح! حاول مرة أخرى.");
+            }
+        }
+
+        function showExamScreen(studentData) {
+            document.getElementById('studentHeaderName').innerText = "الطالب: " + studentData.name + " (" + studentData.grade + ")";
+            
+            loadQuestionsForStudent(studentData.grade);
+
+            document.getElementById('step-registration').classList.add('hidden');
+            document.getElementById('step-otp').classList.add('hidden');
+            document.getElementById('step-exam').classList.remove('hidden');
+        }
+
+        function loadQuestionsForStudent(studentGrade) {
+            const container = document.getElementById('examQuestionsContainer');
+            const allQuestions = JSON.parse(localStorage.getItem('bankQuestions')) || [];
+            
+            const studentQuestions = allQuestions.filter(q => q.grade === studentGrade);
+
+            if (studentQuestions.length === 0) {
+                container.innerHTML = `<div class="bg-amber-50 text-amber-800 p-4 rounded-xl border text-center text-sm font-semibold">لا توجد أسئلة مضافة حالياً لصفك الدراسي (${studentGrade}). يرجى التواصل مع المعلم.</div>`;
+                return;
+            }
+
+            container.innerHTML = studentQuestions.map((q, idx) => `
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 mb-4">
+                    <p class="font-bold text-slate-800 mb-2 text-sm">س${idx + 1}: ${q.qText}</p>
+                    <input type="text" placeholder="اكتب إجابتك هنا..." class="w-full p-2 border rounded-lg text-sm bg-white" required>
+                </div>
+            `).join('');
+        }
+
+        function submitExam(event) {
+            event.preventDefault();
+            const student = JSON.parse(localStorage.getItem('registeredStudent'));
+            const dateStr = new Date().toLocaleString('ar-EG');
+
+            const newRecord = { 
+                name: student.name, 
+                phone: student.phone, 
+                parentPhone: student.parentPhone, 
+                grade: student.grade, 
+                score: 10, 
+                total: 10, 
+                date: dateStr 
+            };
+
+            let examResults = JSON.parse(localStorage.getItem('examResults')) || [];
+            examResults.push(newRecord);
+            localStorage.setItem('examResults', JSON.stringify(examResults));
+
+            const resultMsg = `*تقرير إتمام الاختبار الإلكتروني* 📜\n\n👤 *الطالب:* ${student.name}\n📚 *الصف:* ${student.grade}\n📅 *التاريخ:* ${dateStr}\n\nتم تسليم الإجابات بنجاح! ✨`;
+            window.open(`https://wa.me/${formatEgyptianPhone(student.parentPhone)}?text=${encodeURIComponent(resultMsg)}`, '_blank');
+
+            alert("🎉 تم تسليم الإجابات بنجاح لحساب المعلم!");
+            location.reload();
+        }
+
+        function logoutStudent() {
+            if (confirm("هل تريد تسجيل الخروج والدخول بحساب طالب آخر؟")) {
+                localStorage.removeItem('registeredStudent');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
